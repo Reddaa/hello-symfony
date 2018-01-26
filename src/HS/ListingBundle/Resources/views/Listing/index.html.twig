@@ -1,0 +1,41 @@
+{# src/HS/ListingBundle/Resources/views/Listing/index.html.twig #}
+
+{# extend the base layout for styles... #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div id="container">
+    <h1 class="display-3">Your Listings</h1>
+    <a class="btn btn-danger float-right" href="{{ path('hs_listing_add') }}">Add Listing</a>
+  </div>
+
+  <div class="container">
+    {% if listings |length == 0 %}
+      No listings
+    {%else %}
+    </br>
+    <table class="table table-bordered" >
+      <thead>
+        <tr>
+          <th> Name </th>
+          <th> Size </th>
+          <th> Price </th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for listing in listings %}
+        <tr>
+          <td>{{ listing.name }}</td>
+          <td>{{ listing.size }}</td>
+          <td>{{ listing.price }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+  </div>
+  
+  
+  
+{% endblock %}

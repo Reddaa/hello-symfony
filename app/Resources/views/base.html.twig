@@ -49,15 +49,15 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="#">Home
+              <a class="nav-link" href="/">Home
                 <span class="sr-only">(current)</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">About</a>
-            </li>
+            
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                
+                <li class="nav-item">
+                  <a class="nav-link" href="{{path ('hs_listing_index')}}">Listings</a>
+                </li>
                 <li class="nav-item">
                     <li class="nav-item">
                       <a class="nav-link" href="/profile">{{ app.user.username }}</a>
@@ -86,11 +86,7 @@
     <div class="container">
 
       <!-- Jumbotron Header -->
-      <header class="jumbotron my-4">
-        <h1 class="display-3">A Warm Welcome!</h1>
-        <p class="lead">Hello symfony - A bootstrapped project to explore Symfony</p>
-        <a href="#" class="btn btn-primary btn-lg">Call to action!</a>
-      </header>
+      
 
       {% block body %}
       <!-- Page Features -->

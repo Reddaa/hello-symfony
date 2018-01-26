@@ -1,0 +1,14 @@
+{# extend the base layout for styles... #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div id="container">
+    <h1 class="display-3">Add Listing</h1>
+  </div>
+
+  {{ include("HSListingBundle:Listing:form_add.html.twig") }}
+
+  
+  
+  
+{% endblock %}
