@@ -1,3 +1,0 @@
-hs_user_homepage:
-    path:     /
-    defaults: { _controller: HSUserBundle:Default:index }
