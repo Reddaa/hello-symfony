@@ -4,6 +4,7 @@ namespace HS\ListingBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Doctrine\ORM\EntityManager;
 use HS\ListingBundle\Repository\ListingRepository;
 use HS\ListingBundle\Entity\Listing;
@@ -46,38 +47,52 @@ class DefaultController extends Controller
      * 
      * @Security("has_role('ROLE_USER')")
      * @Route("/manage/listing", name="hs_listing_add")
+     * @Method({"POST"})
      */
     public function addAction(Request $request)
     {
         $listing = new Listing();
         $form = $this->get('form.factory')->create(ListingType::class, $listing);
 
-        //if the user submited the form to add
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        $formResult = $form->handleRequest($request);
+        //if the listing is valid
+        if ($request->isMethod('POST') && $formResult->isValid()) {
 
-            //get the file that has been uploaded
-            $file = $listing->getPhoto();
-            //generate a unique file name for the uploaded image
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
-
-            //move the image from the tmp php folder to the app's public folder
-            $file->move(
-                $this->getParameter('public_directory'),
-                $fileName
-            );
-            $listing->setPhoto($fileName);
+            $newFile =  $this->get('hs_file_mover')->moveFile($listing->getPhoto(), 
+                $this->getParameter('public_directory'));
+            
+            $listing->setPhoto($newFile);
+            
+            $listingRepository = $this->getDoctrine()->getManager()
+                ->getRepository(Listing::class);
 
             $listing->setUser($this->getUser());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($listing);
-            $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
+            $listingRepository->addListing($listing);
+            
+            $request->getSession()->getFlashBag()->add('notice', 'Saved');
             return $this->redirectToRoute('hs_listing_index');
         }
 
 
-        //If the request is a GET request we render the form        
-        return $this->render('HSListingBundle:Listing:add.html.twig', array(
+        return $this->render("HSListingBundle:Listing:add.html.twig", array(
+            'form' => $form->createView()
+        ));
+        
+    }
+
+    /**
+     * renders the listing form to update or edit the listing
+     * 
+     * @Security("has_role('ROLE_USER')")
+     * @Route("/manage/listing", name="hs_listing_render_form")
+     * @Method({"GET"})
+     **/
+    public function renderListingForm(Request $request)
+    {
+        $listing = new Listing();
+        $form = $this->get('form.factory')->create(ListingType::class, $listing);
+
+        return $this->render("HSListingBundle:Listing:add.html.twig", array(
             'form' => $form->createView()
         ));
     }

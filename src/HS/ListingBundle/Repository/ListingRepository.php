@@ -25,5 +25,19 @@ class ListingRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->findBy(array('user' => $id));
 	}
+
+	/**
+	 * Add a listing to the database
+	 * @param $listing the listing to add
+	 * 	 
+	 * @return boolean
+	 */
+	public function addListing($listing)
+	{
+		$em = $this->getEntityManager();
+		$em->persist($listing);
+		$em->flush();
+
+	}
 	
 }

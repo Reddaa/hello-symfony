@@ -5,6 +5,8 @@ namespace HS\ListingBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use HS\UserBundle\Entity\User;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 
 /**
@@ -12,6 +14,8 @@ use HS\UserBundle\Entity\User;
  *
  * @ORM\Table(name="listing")
  * @ORM\Entity(repositoryClass="HS\ListingBundle\Repository\ListingRepository")
+ * @UniqueEntity(fields="name", message="Liting with same name already exists")
+ * 
  */
 class Listing
 {
