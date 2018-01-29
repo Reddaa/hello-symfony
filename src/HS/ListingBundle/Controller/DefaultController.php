@@ -58,6 +58,7 @@ class DefaultController extends Controller
         //if the listing is valid
         if ($request->isMethod('POST') && $formResult->isValid()) {
 
+            //the service hs_file_mover can be used at any part of the app
             $newFile =  $this->get('hs_file_mover')->moveFile($listing->getPhoto(), 
                 $this->getParameter('public_directory'));
             
