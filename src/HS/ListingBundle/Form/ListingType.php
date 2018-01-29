@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 
 
 class ListingType extends AbstractType
@@ -15,7 +17,11 @@ class ListingType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')->add('size')->add('price')->add('save', SubmitType::class);
+        $builder->add('name')
+        ->add('size')
+        ->add('price')
+        ->add('photo', FileType::class, array('label' => 'Image') )
+        ->add('save',  SubmitType::class);
     }/**
      * {@inheritdoc}
      */

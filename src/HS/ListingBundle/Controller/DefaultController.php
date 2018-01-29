@@ -54,12 +54,25 @@ class DefaultController extends Controller
 
         //if the user submited the form to add
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+            //get the file that has been uploaded
+            $file = $listing->getPhoto();
+            //generate a unique file name for the uploaded image
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+
+            //move the image from the tmp php folder to the app's public folder
+            $file->move(
+                $this->getParameter('public_directory'),
+                $fileName
+            );
+            $listing->setPhoto($fileName);
+
             $listing->setUser($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($listing);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
-          return $this->redirectToRoute('hs_listing_index');
+            return $this->redirectToRoute('hs_listing_index');
         }
 
 
