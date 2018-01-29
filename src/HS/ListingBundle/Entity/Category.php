@@ -94,5 +94,11 @@ class Category
     {
         return $this->description;
     }
+
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }
 

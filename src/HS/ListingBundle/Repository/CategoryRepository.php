@@ -10,4 +10,16 @@ namespace HS\ListingBundle\Repository;
  */
 class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	/**
+	  * 
+	  *	Returns all the categories created by the admin
+	  *
+	  *
+	  * @return array of Categories
+	  */
+	public function getCategories()
+	{
+		return $this->findBy(array());
+	}
 }

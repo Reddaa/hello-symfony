@@ -7,6 +7,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use HS\ListingBundle\Entity\Category;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use HS\ListingBundle\Repository\CategoryRepository;
+
 
 
 
@@ -21,8 +25,15 @@ class ListingType extends AbstractType
         ->add('size')
         ->add('price')
         ->add('photo', FileType::class, array('label' => 'Image') )
+        ->add('category', EntityType::class, 
+            array(
+                'class'=> "HS\ListingBundle\Entity\Category", 
+                'label' => "Category"
+                
+            ))
         ->add('save',  SubmitType::class);
-    }/**
+    }
+    /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -39,6 +50,7 @@ class ListingType extends AbstractType
     {
         return 'hs_listingbundle_listing';
     }
+
 
 
 }

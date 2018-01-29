@@ -60,6 +60,32 @@ class Listing
     private $user;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     */
+    private $category;
+
+    /**
+     * 
+     * Get Category
+     * 
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * 
+     * Set Category
+     * 
+     **/
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    /**
      * Get user 
      *
      * gets the user of the listing
@@ -68,6 +94,7 @@ class Listing
     {
         return $this->user;
     }
+
 
     /**
      * Set user
