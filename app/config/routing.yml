@@ -10,10 +10,7 @@ hs_user:
 app:
     resource: '@AppBundle/Controller/'
     type: annotation
-<<<<<<< HEAD
-
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
-=======
->>>>>>> e289caf127a42e850e6c051092d2daa96e60081b
+
