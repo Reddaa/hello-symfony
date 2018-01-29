@@ -4,7 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-
     "content-hash": "0faaedfee56e657e87b19f0411d1e0c7",
     "packages": [
         {
@@ -890,6 +889,7 @@
             "time": "2016-10-17T18:31:11+00:00"
         },
         {
+<<<<<<< HEAD
 
             "name": "friendsofsymfony/user-bundle",
             "version": "v2.0.2",
@@ -968,6 +968,8 @@
             "time": "2017-11-29T17:01:21+00:00"
         },
         {
+=======
+>>>>>>> e289caf127a42e850e6c051092d2daa96e60081b
             "name": "incenteev/composer-parameter-handler",
             "version": "v2.1.2",
             "source": {
@@ -2466,6 +2468,5 @@
     "platform": {
         "php": ">=5.5.9"
     },
-
     "platform-dev": []
 }
