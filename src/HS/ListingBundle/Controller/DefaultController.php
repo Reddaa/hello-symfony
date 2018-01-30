@@ -62,7 +62,7 @@ class DefaultController extends Controller
             //the service hs_file_mover can be used at any part of the app
             $newFile =  $this->get('hs_file_mover')->moveFile($listing->getPhoto(), 
                 $this->getParameter('public_directory'));
-            
+           
             $listing->setPhoto($newFile);
             
             $listingRepository = $this->getDoctrine()->getManager()

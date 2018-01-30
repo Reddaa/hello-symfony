@@ -10,3 +10,8 @@ services:
     hs_stat_calculator:
       class: HS\ListingBundle\Service\StatCalculator
       arguments: ["@doctrine.orm.entity_manager"]
+
+    hs_pre_controller_execute:
+        class: HS\ListingBundle\EventListener\ControllerEventSubscriber
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
