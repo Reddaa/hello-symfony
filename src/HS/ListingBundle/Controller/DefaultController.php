@@ -17,6 +17,7 @@ use OC\PlatformBundle\Event\PlatformEvents;
 
 
 
+
 class DefaultController extends Controller
 {
     
@@ -96,5 +97,69 @@ class DefaultController extends Controller
         return $this->render("HSListingBundle:Listing:add.html.twig", array(
             'form' => $form->createView()
         ));
+    }
+
+    /**
+     * view a listing by id
+     * 
+     * @Security("has_role('ROLE_USER')")
+     * @Route("/manage/listing/{id}", name="hs_listing_view")
+     * @Method({"GET"})
+     **/
+    public function viewListing($id)
+    {
+        $listingRepository = $this->getDoctrine()->getManager()
+                ->getRepository(Listing::class);
+        $listing = $listingRepository->findById($id);
+
+        $this->get('hs_stat_calculator')->addListingView($listing, $this->getUser());
+        
+        $viewsCount = $listing->getListingViews($this->getUser());
+        return $this->render("HSListingBundle:Listing:view.html.twig", array(
+            'listing' => $listing,
+            'viewsCount' => $viewsCount
+        ));
+    }
+
+
+    /**
+     * view a listing by id
+     * 
+     * @Security("has_role('ROLE_USER')")
+     * @Route("/manage/listing/edit/{id}", name="hs_listing_edit")
+     * @Method({"GET"})
+     **/
+    public function editListing(Request $request, $id)
+    {
+        $listing = new Listing();
+        $listingRepository = $this->getDoctrine()->getManager()
+            ->getRepository(Listing::class);
+        $listing = $listingRepository->findById($id);
+        $listing->setPhoto(null);
+        $form = $this->get('form.factory')->create(ListingType::class, $listing);
+        $formResult = $form->handleRequest($request);
+
+        
+
+
+        return $this->render("HSListingBundle:Listing:add.html.twig", array(
+            'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * delete a listing 
+     * 
+     * @Security("has_role('ROLE_USER')")
+     * @Route("/manage/listing/delete/{id}", name="hs_listing_delete")
+     * @Method({"GET"})
+     **/
+    public function deleteListing(Listing $listing)
+    {
+        $listingRepository = $this->getDoctrine()->getManager()
+            ->getRepository(Listing::class);
+        $listingRepository->delete($listing);
+        
+        return $this->redirectToRoute("hs_listing_index", array());
     }
 }

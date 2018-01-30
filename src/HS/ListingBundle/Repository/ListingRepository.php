@@ -40,4 +40,26 @@ class ListingRepository extends \Doctrine\ORM\EntityRepository
 
 	}
 	
+	/**
+	 * Return the listing matching the id passed as argument
+	 * @param $id the id of the listing 
+	 * @return Listing
+	 */
+	public function findById($id)
+	{
+		return $this->findOneBy(array('id' => $id));
+	}
+
+	/**
+	 * Delete listing by id
+	 * @param $id the id of the listing to delete 
+	 * @return void
+	 */
+	public function delete($listing)
+	{
+		$em = $this->getEntityManager();
+
+		$em->remove($listing);
+		$em->flush();
+	}
 }

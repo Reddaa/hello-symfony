@@ -6,3 +6,7 @@ services:
     hs_file_mover:
       class: HS\ListingBundle\Service\FileMover
       arguments: []
+
+    hs_stat_calculator:
+      class: HS\ListingBundle\Service\StatCalculator
+      arguments: ["@doctrine.orm.entity_manager"]

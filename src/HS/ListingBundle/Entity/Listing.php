@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use HS\UserBundle\Entity\User;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 
 
 
@@ -19,6 +21,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Listing
 {
+
+
+    public function __construct() {
+        $this->views = new ArrayCollection();
+    }
+
     /**
      * @var int
      *
@@ -68,6 +76,32 @@ class Listing
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     private $category;
+
+    /**
+     * @ORM\OneToMany(targetEntity="HS\ListingBundle\Entity\ListingMetric", mappedBy="listing")
+     */
+    private $views;
+
+
+    /**
+     * 
+     * Get views
+     * 
+     */
+    public function getViews()
+    {
+        return $this->views;
+    }
+
+    /**
+     * 
+     * Set views
+     * 
+     **/
+    public function setViews($views)
+    {
+        $this->views = $views;
+    }
 
     /**
      * 
@@ -214,6 +248,35 @@ class Listing
     public function getPhoto()
     {
         return $this->photo;
+    }
+
+    /**
+     * Return unique views of the article
+     * @param 
+     * @return int
+     */
+    public function getUniqueViews()
+    {
+        return count($this->views);
+    }
+
+    /**
+     * Return how many time the user viewed the listing
+     * @param type $user 
+     * @return type int
+     */
+    public function getListingViews($user)
+    {
+
+        $criteria = Criteria::create()
+        ->where(Criteria::expr()->eq("user", $user));
+        
+        $views = $this->views->matching($criteria);
+        $count = 0;
+        foreach ($views as $view) {
+            $count += $view->getViews();
+        }
+        return $count;
     }
 }
 
