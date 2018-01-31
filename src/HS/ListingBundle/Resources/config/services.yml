@@ -21,6 +21,11 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    HS\ListingBundle\EventListener\DoctrineEventListener:
+      tags:
+        - { name: doctrine.event_listener, event: prePersist }
+      arguments: ['@hs_file_mover']
+
     hs_file_mover:
       class: HS\ListingBundle\Service\FileMover
       public: true
@@ -28,6 +33,7 @@ services:
 
     hs_stat_calculator:
       class: HS\ListingBundle\Service\StatCalculator
+      public: true
       arguments: ["@doctrine.orm.entity_manager"]
 
     hs_pre_controller_execute:
