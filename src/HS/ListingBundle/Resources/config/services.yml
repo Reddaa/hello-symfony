@@ -2,3 +2,35 @@ services:
 #    hs_listing.example:
 #        class: HS\ListingBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+    _defaults:
+      autowire: true
+      autoconfigure: true
+      public: false
+
+    HS\ListingBundle\:
+        resource: '../../../../../src/HS\ListingBundle/*'
+        # you can exclude directories or files
+        # but if a service is unused, it's removed anyway
+        exclude: '../../../../../src/HS/ListingBundle/{Entity,Tests}'
+
+    # controllers are imported separately to make sure they're public
+    # and have a tag that allows actions to type-hint services
+    HS\ListingBundle\Controller\:
+        resource: '../../../../../src/HS/ListingBundle/Controller'
+        public: true
+        tags: ['controller.service_arguments']
+
+    hs_file_mover:
+      class: HS\ListingBundle\Service\FileMover
+      public: true
+      arguments: [ '%public_directory%']
+
+    hs_stat_calculator:
+      class: HS\ListingBundle\Service\StatCalculator
+      arguments: ["@doctrine.orm.entity_manager"]
+
+    hs_pre_controller_execute:
+        class: HS\ListingBundle\EventListener\ControllerEventSubscriber
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }

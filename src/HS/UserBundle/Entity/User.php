@@ -38,6 +38,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
      */
     private $listings;
 
+    /**
+     * One User has Many Listings viewed.
+     *
+     * @ORM\OneToMany(targetEntity="HS\ListingBundle\Entity\ListingMetric", mappedBy="user")
+     */
+    private $listingViews;
+
+
+
     public function getListings()
     {
         return $this->listings;
@@ -47,4 +56,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
     {
         $this->listings = $listings;
     }
+
+    public function getListingViews()
+    {
+        return $this->listingViews;
+    }
+
+    public function setListingViews($listingViews)
+    {
+        $this->listingViews = $listingViews;
+    }
+
  }
