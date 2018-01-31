@@ -8,13 +8,15 @@ namespace HS\ListingBundle\Service;
 class FileMover
 {
 	
-	function __construct()
+	private $destination_dir;
+
+	function __construct($destination_dir)
 	{
-		
+		$this->destination_dir = $destination_dir;
 	}
 
 
-	public function moveFile($file, $newPath)
+	public function moveFile($file)
 	{
 		
         //generate a unique file name for the uploaded image
@@ -22,7 +24,7 @@ class FileMover
 
         //move the image from the tmp php folder to the app's public folder
         $file->move(
-            $newPath,
+            $this->destination_dir,
             $fileName
         );
         

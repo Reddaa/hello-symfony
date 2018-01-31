@@ -12,8 +12,6 @@ use HS\ListingBundle\Form\ListingType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use OC\PlatformBundle\Event\MessagePostEvent;
-use OC\PlatformBundle\Event\PlatformEvents;
 
 
 
@@ -26,12 +24,8 @@ class DefaultController extends Controller
      * @Security("has_role('ROLE_USER')")
      * @Route("/manage/listings", name="hs_listing_index")
      */
-    public function indexAction()
+    public function indexAction(ListingRepository $listingRepository)
     {
-        //get entityManager 
-        $listingRepository = $this->getDoctrine()->getManager()
-            ->getRepository(Listing::class);
-
         //current connected user
     	$user = $this->getUser();
 
@@ -50,31 +44,23 @@ class DefaultController extends Controller
      * @Route("/manage/listing", name="hs_listing_add")
      * @Method({"POST"})
      */
-    public function addAction(Request $request)
+    public function addAction(Request $request, ListingRepository $listingRepository)
     {
         $listing = new Listing();
-        $form = $this->get('form.factory')->create(ListingType::class, $listing);
+        $formResult = $this->get('form.factory')->create(ListingType::class, $listing)
+                            ->handleRequest($request);
 
-        $formResult = $form->handleRequest($request);
         //if the listing is valid
         if ($request->isMethod('POST') && $formResult->isValid()) {
 
-            //the service hs_file_mover can be used at any part of the app
-            $newFile =  $this->get('hs_file_mover')->moveFile($listing->getPhoto(), 
-                $this->getParameter('public_directory'));
-            
-            $listing->setPhoto($newFile);
-            
-            $listingRepository = $this->getDoctrine()->getManager()
-                ->getRepository(Listing::class);
-
-            $listing->setUser($this->getUser());
+            //we set the owner of the listing to the current connected user
+            $listing->setUser($this->getUser());            
             $listingRepository->addListing($listing);
             
             $request->getSession()->getFlashBag()->add('notice', 'Saved');
+            
             return $this->redirectToRoute('hs_listing_index');
         }
-
 
         return $this->render("HSListingBundle:Listing:add.html.twig", array(
             'form' => $form->createView()
@@ -106,12 +92,10 @@ class DefaultController extends Controller
      * @Route("/manage/listing/{id}", name="hs_listing_view")
      * @Method({"GET"})
      **/
-    public function viewListing($id)
+    public function viewListing(Listing $listing, ListingRepository $listingRepository)
     {
-        $listingRepository = $this->getDoctrine()->getManager()
-                ->getRepository(Listing::class);
-        $listing = $listingRepository->findById($id);
-
+        if ($listing == null)
+            throw $this->createNotFoundException("entity not found");
         $this->get('hs_stat_calculator')->addListingView($listing, $this->getUser());
         
         $viewsCount = $listing->getListingViews($this->getUser());
@@ -129,18 +113,13 @@ class DefaultController extends Controller
      * @Route("/manage/listing/edit/{id}", name="hs_listing_edit")
      * @Method({"GET"})
      **/
-    public function editListing(Request $request, $id)
+    public function editListing(Request $request, Listing $listing, ListingRepository $listingRepository)
     {
-        $listing = new Listing();
-        $listingRepository = $this->getDoctrine()->getManager()
-            ->getRepository(Listing::class);
-        $listing = $listingRepository->findById($id);
+        if ($listing == null)
+            throw $this->createNotFoundException("Listing not found");
         $listing->setPhoto(null);
         $form = $this->get('form.factory')->create(ListingType::class, $listing);
         $formResult = $form->handleRequest($request);
-
-        
-
 
         return $this->render("HSListingBundle:Listing:add.html.twig", array(
             'form' => $form->createView()
@@ -152,12 +131,14 @@ class DefaultController extends Controller
      * 
      * @Security("has_role('ROLE_USER')")
      * @Route("/manage/listing/delete/{id}", name="hs_listing_delete")
-     * @Method({"GET"})
+     * @Method({"GET"}) 
      **/
-    public function deleteListing(Listing $listing)
+    public function deleteListing(Listing $listing = null, ListingRepository $listingRepository)
     {
-        $listingRepository = $this->getDoctrine()->getManager()
-            ->getRepository(Listing::class);
+        
+        if ($listing == null) 
+            throw $this->createNotFoundException('Sorry not existing');
+
         $listingRepository->delete($listing);
         
         return $this->redirectToRoute("hs_listing_index", array());

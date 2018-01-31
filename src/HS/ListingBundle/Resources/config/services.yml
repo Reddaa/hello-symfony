@@ -3,10 +3,48 @@ services:
 #        class: HS\ListingBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
 
+    _defaults:
+      autowire: true
+      autoconfigure: true
+      public: false
+
+    HS\ListingBundle\:
+        resource: '../../../../../src/HS\ListingBundle/*'
+        # you can exclude directories or files
+        # but if a service is unused, it's removed anyway
+        exclude: '../../../../../src/HS/ListingBundle/{Entity,Tests}'
+
+    # controllers are imported separately to make sure they're public
+    # and have a tag that allows actions to type-hint services
+    HS\ListingBundle\Controller\:
+        resource: '../../../../../src/HS/ListingBundle/Controller'
+        public: true
+        tags: ['controller.service_arguments']
+
     hs_file_mover:
       class: HS\ListingBundle\Service\FileMover
-      arguments: []
+      public: true
+      arguments: [ '%public_directory%']
 
     hs_stat_calculator:
       class: HS\ListingBundle\Service\StatCalculator
+      public: true
       arguments: ["@doctrine.orm.entity_manager"]
+
+#   hs_pre_controller_execute:
+#       class: HS\ListingBundle\EventListener\ControllerEventSubscriber
+#      calls:
+##         - method: setHsFileMover
+#         arguments:
+##          - '@hs_file_mover'
+##    - method: setPublicDirectory
+#    arguments:
+#     - '%public_directory%'
+#       tags:
+#         - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    HS\ListingBundle\EventListener\DoctrineEventListener:
+      arguments: ['@hs_file_mover']
+      tags:
+        - { name: doctrine.event_listener, event: prePersist }
+        - { name: doctrine.event_listener, event: preUpdate }
