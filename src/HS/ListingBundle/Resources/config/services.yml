@@ -28,23 +28,9 @@ services:
 
     hs_stat_calculator:
       class: HS\ListingBundle\Service\StatCalculator
-      public: true
       arguments: ["@doctrine.orm.entity_manager"]
 
-#   hs_pre_controller_execute:
-#       class: HS\ListingBundle\EventListener\ControllerEventSubscriber
-#      calls:
-##         - method: setHsFileMover
-#         arguments:
-##          - '@hs_file_mover'
-##    - method: setPublicDirectory
-#    arguments:
-#     - '%public_directory%'
-#       tags:
-#         - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
-    HS\ListingBundle\EventListener\DoctrineEventListener:
-      arguments: ['@hs_file_mover']
-      tags:
-        - { name: doctrine.event_listener, event: prePersist }
-        - { name: doctrine.event_listener, event: preUpdate }
+    hs_pre_controller_execute:
+        class: HS\ListingBundle\EventListener\ControllerEventSubscriber
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }

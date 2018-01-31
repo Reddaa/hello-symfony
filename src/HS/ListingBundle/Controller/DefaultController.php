@@ -55,6 +55,7 @@ class DefaultController extends Controller
 
             //we set the owner of the listing to the current connected user
             $listing->setUser($this->getUser());            
+
             $listingRepository->addListing($listing);
             
             $request->getSession()->getFlashBag()->add('notice', 'Saved');
