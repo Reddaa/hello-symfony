@@ -84,6 +84,12 @@ class Listing
 
 
     /**
+     * @ORM\Column(name="active", type="boolean")
+     */
+    private $active;
+
+
+    /**
      * 
      * Get views
      * 
@@ -261,22 +267,19 @@ class Listing
     }
 
     /**
-     * Return how many time the user viewed the listing
-     * @param type $user 
-     * @return type int
+     * @return mixed
      */
-    public function getListingViews($user)
+    public function getActive()
     {
+        return $this->active;
+    }
 
-        $criteria = Criteria::create()
-        ->where(Criteria::expr()->eq("user", $user));
-        
-        $views = $this->views->matching($criteria);
-        $count = 0;
-        foreach ($views as $view) {
-            $count += $view->getViews();
-        }
-        return $count;
+    /**
+     * @param mixed $active
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
     }
 }
 

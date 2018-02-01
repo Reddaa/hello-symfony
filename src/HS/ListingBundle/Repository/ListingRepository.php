@@ -27,12 +27,22 @@ class ListingRepository extends ServiceEntityRepository
 	  * @param int $id The id of the actual user
 	  *    
 	  *
-	  * @return array of Listing
+	  * @return array of ManageListing
 	  */
 	public function getUserListings($id)
 	{
 		return $this->findBy(array('user' => $id));
 	}
+
+    /**
+     * Return all the listings
+     * TODO add paging
+     *
+     * @return Listing
+     */
+	public function getListings() {
+	    return $this->findBy(array());
+    }
 
 	/**
 	 * Add a listing to the database
@@ -66,8 +76,9 @@ class ListingRepository extends ServiceEntityRepository
 	public function delete($listing)
 	{
 		$em = $this->getEntityManager();
-
 		$em->remove($listing);
-		$em->flush();
+        $em->flush();
 	}
+
+
 }
