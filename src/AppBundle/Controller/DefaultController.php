@@ -8,6 +8,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
+
+    /*public function __construct($doctrine)
+    {
+        
+    }*/
+
     /**
      * @Route("/", name="homepage")
      */
