@@ -1,0 +1,44 @@
+{# src/HS/ListingBundle/Resources/views/Listing/index.html.twig #}
+
+{# extend the base layout for styles... #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="container">
+        <h1 class="display-3">Available Listings</h1>
+    </div>
+
+    <div class="container">
+        {% if listings |length == 0 %}
+            No listings
+        {%else %}
+            </br>
+            <table class="table table-bordered" >
+                <thead>
+                <tr>
+                    <th> Name </th>
+                    <th> Size </th>
+                    <th> Price </th>
+                    <th> Category </th>
+                    <th> Image </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for listing in listings %}
+                    <tr>
+                        <td>{{ listing.name }}</td>
+                        <td>{{ listing.size }}</td>
+                        <td>{{ listing.price }}</td>
+                        <td>{{ listing.category}}</td>
+                        <td><a href="{{ asset('uploads/listings_images/' ~ listing.photo) }}"><img style="width:150px; height: 150px;" src="{{ asset('uploads/listings_images/' ~ listing.photo) }}" alt="listing image" /></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+    </div>
+
+
+
+{% endblock %}

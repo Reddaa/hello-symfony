@@ -3,6 +3,7 @@
 namespace HS\ListingBundle\Service;
 
 use HS\ListingBundle\Entity\ListingMetric;
+use HS\ListingBundle\Repository\ListingMetricRepository;
 
 /**
 * Service to calculat stat

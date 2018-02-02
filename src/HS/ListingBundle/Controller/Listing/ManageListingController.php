@@ -1,6 +1,6 @@
 <?php
 
-namespace HS\ListingBundle\Controller;
+namespace HS\ListingBundle\Controller\Listing;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 
 
-class DefaultController extends Controller
+class ManageListingController extends Controller
 {
     
     /**
@@ -33,7 +33,7 @@ class DefaultController extends Controller
         $listings = $listingRepository->getUserListings($user->getId());
 
         //render view and send $listings as argument
-        return $this->render('HSListingBundle:Listing:index.html.twig', array(
+        return $this->render('HSListingBundle:ManageListing:index.html.twig', array(
             'listings' => $listings
         ));
     }
@@ -47,9 +47,8 @@ class DefaultController extends Controller
     public function addAction(Request $request, ListingRepository $listingRepository)
     {
         $listing = new Listing();
-        $formResult = $this->get('form.factory')->create(ListingType::class, $listing)
-                            ->handleRequest($request);
-
+        $form = $this->get('form.factory')->create(ListingType::class, $listing);
+        $formResult = $form->handleRequest();
         //if the listing is valid
         if ($request->isMethod('POST') && $formResult->isValid()) {
 
@@ -63,7 +62,7 @@ class DefaultController extends Controller
             return $this->redirectToRoute('hs_listing_index');
         }
 
-        return $this->render("HSListingBundle:Listing:add.html.twig", array(
+        return $this->render("HSListingBundle:ManageListing:add.html.twig", array(
             'form' => $form->createView()
         ));
         
@@ -81,7 +80,7 @@ class DefaultController extends Controller
         $listing = new Listing();
         $form = $this->get('form.factory')->create(ListingType::class, $listing);
 
-        return $this->render("HSListingBundle:Listing:add.html.twig", array(
+        return $this->render("HSListingBundle:ManageListing:add.html.twig", array(
             'form' => $form->createView()
         ));
     }
@@ -99,8 +98,8 @@ class DefaultController extends Controller
             throw $this->createNotFoundException("entity not found");
         $this->get('hs_stat_calculator')->addListingView($listing, $this->getUser());
         
-        $viewsCount = $listing->getListingViews($this->getUser());
-        return $this->render("HSListingBundle:Listing:view.html.twig", array(
+        $viewsCount = $listingRepository->getListingViews($listing, $this->getUser());
+        return $this->render("HSListingBundle:ManageListing:view.html.twig", array(
             'listing' => $listing,
             'viewsCount' => $viewsCount
         ));
@@ -117,12 +116,12 @@ class DefaultController extends Controller
     public function editListing(Request $request, Listing $listing, ListingRepository $listingRepository)
     {
         if ($listing == null)
-            throw $this->createNotFoundException("Listing not found");
+            throw $this->createNotFoundException("ManageListing not found");
         $listing->setPhoto(null);
         $form = $this->get('form.factory')->create(ListingType::class, $listing);
         $formResult = $form->handleRequest($request);
 
-        return $this->render("HSListingBundle:Listing:add.html.twig", array(
+        return $this->render("HSListingBundle:ManageListing:add.html.twig", array(
             'form' => $form->createView()
         ));
     }
