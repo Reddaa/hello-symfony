@@ -41,7 +41,7 @@ class ListingRepository extends ServiceEntityRepository
      * @return Listing
      */
 	public function getListings() {
-	    return $this->findBy(array());
+	    return $this->findBy(array("active" => true));
     }
 
 	/**
@@ -79,6 +79,16 @@ class ListingRepository extends ServiceEntityRepository
 		$em->remove($listing);
         $em->flush();
 	}
+
+    public function changeStatus(Listing $listing)
+    {
+        $em = $this->getEntityManager();
+
+        $listing->setActive(!$listing->getActive());
+        $em->flush($listing);
+
+    }
+
 
 
 }

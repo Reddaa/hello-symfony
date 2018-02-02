@@ -21,5 +21,6 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 	public function getCategories()
 	{
 		return $this->findBy(array());
+
 	}
 }

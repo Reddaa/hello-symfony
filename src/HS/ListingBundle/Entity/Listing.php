@@ -24,6 +24,7 @@ class Listing
 
 
     public function __construct() {
+        $this->active = true;
         $this->views = new ArrayCollection();
     }
 
@@ -87,6 +88,13 @@ class Listing
      * @ORM\Column(name="active", type="boolean")
      */
     private $active;
+
+    /**
+     * @var Arraylist(LOrder)
+     *
+     * @ORM\ManyToMany(targetEntity="HS\ListingBundle\Entity\LOrder", mappedBy="listings")
+     */
+    private $orders;
 
 
     /**
@@ -281,5 +289,23 @@ class Listing
     {
         $this->active = $active;
     }
+
+    /**
+     * @return Arraylist
+     */
+    public function getOrders(): Arraylist
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param Arraylist $orders
+     */
+    public function setOrders(Arraylist $orders)
+    {
+        $this->orders = $orders;
+    }
+
+
 }
 

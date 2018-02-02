@@ -38,6 +38,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
      */
     private $listings;
 
+     /**
+      * One User has Many Orders.
+      * @ORM\OneToMany(targetEntity="HS\UserBundle\Entity\User", mappedBy="user")
+      */
+    private $orders;
+
     /**
      * One User has Many Listings viewed.
      *
@@ -66,5 +72,22 @@ use Gedmo\Mapping\Annotation as Gedmo;
     {
         $this->listingViews = $listingViews;
     }
+
+     /**
+      * @return mixed
+      */
+     public function getOrders()
+     {
+         return $this->orders;
+     }
+
+     /**
+      * @param mixed $orders
+      */
+     public function setOrders($orders)
+     {
+         $this->orders = $orders;
+     }
+
 
  }
