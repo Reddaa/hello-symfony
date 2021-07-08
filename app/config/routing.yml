@@ -3,6 +3,11 @@ hs_listing:
     type:     annotation
     prefix:   /
 
+hs_order:
+    resource: "@HSListingBundle/Controller/Order/"
+    type:     annotation
+    prefix:   /
+
 hs_user:
     resource: "@HSUserBundle/Resources/config/routing.yml"
     prefix:   /

@@ -61,7 +61,6 @@ class DefaultControllerTest extends WebTestCase
 
         $crawler = $client->submit($form);
 
-        dump($client->getResponse()->getStatusCode());
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
 
@@ -72,5 +71,4 @@ class DefaultControllerTest extends WebTestCase
         ));
         $this->assertEquals(1, 1);
     }
-
 }

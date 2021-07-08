@@ -26,6 +26,7 @@ services:
         - { name: doctrine.event_listener, event: prePersist }
       arguments: ['@hs_file_mover']
 
+
     hs_file_mover:
       class: HS\ListingBundle\Service\FileMover
       public: true

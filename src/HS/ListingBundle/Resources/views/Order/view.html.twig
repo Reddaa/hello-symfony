@@ -1,0 +1,28 @@
+{# src/HS/ListingBundle/Resources/views/Listing/index.html.twig #}
+
+{# extend the base layout for styles... #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="container">
+        <h1 class="display-3">Order created ORD{{ order.getId() }} </h1>
+        <a class="btn btn-success float-right" href="">Pay</a>
+    </div>
+    <br>
+    <br>
+    <div class="container">
+
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="category"> Item </label>
+                <div class="col-sm-6">
+                    <input id="category" class="form-control"  type="text" readonly="1" value="{{order.getListings().getValues()[0].getName()}}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

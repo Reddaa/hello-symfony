@@ -7,9 +7,10 @@ use HS\ListingBundle\Entity\ListingMetric;
 use HS\ListingBundle\Repository\ListingMetricRepository;
 use HS\ListingBundle\Repository\ListingRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * Created by PhpStorm.

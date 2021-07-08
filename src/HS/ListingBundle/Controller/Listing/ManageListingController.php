@@ -2,6 +2,10 @@
 
 namespace HS\ListingBundle\Controller\Listing;
 
+use HS\ListingBundle\Event\Listing\ListingPostCreatedEvent;
+use HS\ListingBundle\Event\Listing\ListingPreCreatedEvent;
+use HS\ListingBundle\Repository\ListingMetricRepository;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -10,6 +14,7 @@ use HS\ListingBundle\Repository\ListingRepository;
 use HS\ListingBundle\Entity\Listing;
 use HS\ListingBundle\Form\ListingType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,24 +44,36 @@ class ManageListingController extends Controller
     }
 
     /**
-     * 
+     *
      * @Security("has_role('ROLE_USER')")
      * @Route("/manage/listing", name="hs_listing_add")
      * @Method({"POST"})
+     *
+     * @param Request $request
+     * @param ListingRepository $listingRepository
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function addAction(Request $request, ListingRepository $listingRepository)
     {
         $listing = new Listing();
         $form = $this->get('form.factory')->create(ListingType::class, $listing);
-        $formResult = $form->handleRequest();
         //if the listing is valid
-        if ($request->isMethod('POST') && $formResult->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            //we dispatch the event to listener about pre creation of a listing
+            $dispatcher = $this->get("event_dispatcher");
+
+            $event = new ListingPreCreatedEvent($listing, $this->getUser());
+            $dispatcher->dispatch(ListingPreCreatedEvent::NAME, $event);
 
             //we set the owner of the listing to the current connected user
             $listing->setUser($this->getUser());            
 
             $listingRepository->addListing($listing);
-            
+
+            //same here, after the listing is created we dispatch that event to listeners
+            $event = new ListingPostCreatedEvent($listing, $this->getUser());
+            $dispatcher->dispatch(ListingPostCreatedEvent::NAME, $event);
+
             $request->getSession()->getFlashBag()->add('notice', 'Saved');
             
             return $this->redirectToRoute('hs_listing_index');
@@ -92,19 +109,18 @@ class ManageListingController extends Controller
      * @Route("/manage/listing/{id}", name="hs_listing_view")
      * @Method({"GET"})
      **/
-    public function viewListing(Listing $listing, ListingRepository $listingRepository)
+    public function viewListing(Listing $listing, ListingMetricRepository $listingRepository)
     {
         if ($listing == null)
             throw $this->createNotFoundException("entity not found");
         $this->get('hs_stat_calculator')->addListingView($listing, $this->getUser());
         
         $viewsCount = $listingRepository->getListingViews($listing, $this->getUser());
-        return $this->render("HSListingBundle:ManageListing:view.html.twig", array(
+        return $this->render("HSListingBundle:ManageListing:view_listing.html.twig", array(
             'listing' => $listing,
             'viewsCount' => $viewsCount
         ));
     }
-
 
     /**
      * view a listing by id
@@ -141,6 +157,23 @@ class ManageListingController extends Controller
 
         $listingRepository->delete($listing);
         
+        return $this->redirectToRoute("hs_listing_index", array());
+    }
+
+    /**
+     * @param Listing $listing
+     * @param ListingRepository $listingRepository
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @Route("/manage/listing/status/{id}", name="hs_listing_change_status")
+     * @Method({"GET"})
+     */
+    public function changeListingActive(Listing $listing, ListingRepository $listingRepository) {
+        if ($listing == null)
+            throw $this->createNotFoundException('Sorry not existing');
+
+        $listingRepository->changeStatus($listing);
+
         return $this->redirectToRoute("hs_listing_index", array());
     }
 }

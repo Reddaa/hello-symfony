@@ -38,6 +38,13 @@
 
             <a class="btn btn-primary" href="{{ path('hs_listing_edit', { 'id': listing.id}) }}">Edit</a>
             <a class="btn btn-danger" href="{{ path('hs_listing_delete', { 'id': listing.id}) }}">Delete</a>
+            {% if(listing.getActive() == true)%}
+              <a class="btn btn-danger" href="{{ path('hs_listing_change_status', {'id': listing.id}) }}" >Deactivate</a>
+            {% else %}
+              <a class="btn btn-danger" href="{{ path('hs_listing_change_status', {'id': listing.id}) }}" >Activate</a>
+            {% endif %}
+
+
           </td>
         </tr>
       {% endfor %}
